@@ -49,9 +49,6 @@ from ultralytics.nn.modules import (
     Segment,
     Silence,
     WorldDetect,
-    BasicStage,
-    PatchEmbed_FasterNet,
-    PatchMerging_FasterNet
 )
 from ultralytics.utils import DEFAULT_CFG_DICT, DEFAULT_CFG_KEYS, LOGGER, colorstr, emojis, yaml_load
 from ultralytics.utils.checks import check_requirements, check_suffix, check_yaml
@@ -194,14 +191,6 @@ class BaseModel(nn.Module):
                 if isinstance(m, RepConv):
                     m.fuse_convs()
                     m.forward = m.forward_fuse  # update forward
-                if type(m) is PatchEmbed_FasterNet:
-                    m.proj = fuse_conv_and_bn(m.proj, m.norm)
-                    delattr(m, 'norm')  # remove BN
-                    m.forward = m.fuseforward
-                if type(m) is PatchMerging_FasterNet:
-                    m.reduction = fuse_conv_and_bn(m.reduction, m.norm)
-                    delattr(m, 'norm')  # remove BN
-                    m.forward = m.fuseforward
             self.info(verbose=verbose)
 
         return self
@@ -896,9 +885,6 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
             DWConvTranspose2d,
             C3x,
             RepC3,
-            BasicStage,
-            PatchEmbed_FasterNet,
-            PatchMerging_FasterNet
         }:
             c1, c2 = ch[f], args[0]
             if c2 != nc:  # if c2 not equal to number of classes (i.e. for Classify() output)
@@ -913,8 +899,6 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
             if m in {BottleneckCSP, C1, C2, C2f, C2fAttn, C3, C3TR, C3Ghost, C3x, RepC3}:
                 args.insert(2, n)  # number of repeats
                 n = 1
-            elif m in [BasicStage]:
-                args.pop(1)
         elif m is AIFI:
             args = [ch[f], *args]
         elif m in {HGStem, HGBlock}:

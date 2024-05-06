@@ -46,9 +46,6 @@ from .block import (
     RepNCSPELAN4,
     ResNetLayer,
     Silence,
-    BasicStage,
-    PatchEmbed_FasterNet,
-    PatchMerging_FasterNet
 )
 from .conv import (
     CBAM,
