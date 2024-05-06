@@ -6,7 +6,7 @@ from pathlib import Path
 
 import torch
 import torch.nn as nn
-
+from ultralytics.nn.EMA import EMA
 from ultralytics.nn.modules import (
     AIFI,
     C1,
@@ -925,6 +925,8 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
             args = [c1, c2, *args[1:]]
         elif m is CBFuse:
             c2 = ch[f[-1]]
+        elif m in {EMA}:
+            args = [ch[f],*args]
         else:
             c2 = ch[f]
 
