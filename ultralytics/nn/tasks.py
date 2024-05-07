@@ -6,7 +6,7 @@ from pathlib import Path
 
 import torch
 import torch.nn as nn
-from ultralytics.nn.EMA import EMA
+
 from ultralytics.nn.modules import (
     AIFI,
     C1,
@@ -49,6 +49,7 @@ from ultralytics.nn.modules import (
     Segment,
     Silence,
     WorldDetect,
+    CoordAtt
 )
 from ultralytics.utils import DEFAULT_CFG_DICT, DEFAULT_CFG_KEYS, LOGGER, colorstr, emojis, yaml_load
 from ultralytics.utils.checks import check_requirements, check_suffix, check_yaml
@@ -925,8 +926,8 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
             args = [c1, c2, *args[1:]]
         elif m is CBFuse:
             c2 = ch[f[-1]]
-        elif m in {EMA}:
-            args = [ch[f],*args]
+        elif m in {CoordAtt}:
+            args = [ch[f], *args]
         else:
             c2 = ch[f]
 
