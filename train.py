@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 
 # Load a model
-model = YOLO("yolov8s-CA.yaml")  # build a new model from scratch
+model = YOLO("yolov8s-CA_EMA.yaml")  # build a new model from scratch
 # Use the model
 model.train(data="ultralytics/cfg/datasets/mydata.yaml",batch=-1,epochs=200,resume=True)  # train the model
 metrics = model.val()  # evaluate model performance on the validation set
